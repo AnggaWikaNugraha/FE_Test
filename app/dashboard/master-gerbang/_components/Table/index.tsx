@@ -1,29 +1,42 @@
 "use client";
 
-import DataTable, { TableColumn } from "react-data-table-component";
-import ReactPaginate from "react-paginate";
-import { useState, useEffect } from "react";
+import DataTable from "react-data-table-component";
 import { Pencil, Eye, Trash, Search, RotateCcw } from "lucide-react";
-import { getGerbangList, Gerbang } from "@/app/lib/_api/master-gerbang/get";
-import { useGerbangData } from "../../_hooks/UseDataGerbang";
 import InputFilter from "@/app/_components/filter/input/text";
 import ButtonAction from "@/app/_components/filter/actions/reset";
 import { getGerbangColumns } from "./TableColumn/gerbang-columns";
 import Pagination from "@/app/_components/paginations";
+import { Gerbang } from "@/app/lib/_types/api-gerbang";
 
-export default function DataTableGerbang() {
-  const {
-    data,
-    page,
-    totalPages,
-    loading,
-    error,
-    filters,
-    handleFilterChange,
-    setPage,
-    resetFilters,
-  } = useGerbangData();
+interface Filters {
+  NamaGerbang: string;
+  NamaCabang: string;
+  IdCabang: string;
+}
 
+interface DataTableGerbangProps {
+  data: Gerbang[];
+  page: number;
+  totalPages: number;
+  loading: boolean;
+  error: string | null;
+  filters: Filters;
+  handleFilterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setPage: (page: number) => void;
+  resetFilters: () => void;
+}
+
+export default function DataTableGerbang({
+  data,
+  page,
+  totalPages,
+  loading,
+  error,
+  filters,
+  handleFilterChange,
+  setPage,
+  resetFilters,
+}: DataTableGerbangProps) {
   // Callback untuk aksi di kolom
   const handleEdit = (row: Gerbang) => {
     console.log("Edit:", row);

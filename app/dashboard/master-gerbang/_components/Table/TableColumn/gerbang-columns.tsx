@@ -1,8 +1,8 @@
 "use client";
 
 import { TableColumn } from "react-data-table-component";
-import { Gerbang } from "@/app/lib/_api/master-gerbang/get";
 import { Pencil, Eye, Trash } from "lucide-react";
+import { Gerbang } from "@/app/lib/_types/api-gerbang";
 
 /**
  * 🔹 Fungsi pembuat kolom DataTable untuk Master Gerbang

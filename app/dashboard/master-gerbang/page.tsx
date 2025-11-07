@@ -4,9 +4,23 @@ import { useState } from "react";
 import DataTableGerbang from "./_components/Table";
 // import ModalGerbang from "@/components/ModalGerbang";
 import { Plus } from "lucide-react";
+import CreateGerbangModal from "./_components/Modal/create";
+import { useGerbangData } from "./_hooks/UseDataGerbang";
 
 export default function MasterGerbangPage() {
   const [showModal, setShowModal] = useState(false);
+  const {
+    data,
+    page,
+    totalPages,
+    loading,
+    error,
+    filters,
+    handleFilterChange,
+    setPage,
+    resetFilters,
+    refetch,
+  } = useGerbangData();
 
   return (
     <div className="bg-white rounded-xl shadow p-6">
@@ -20,8 +34,28 @@ export default function MasterGerbangPage() {
         </button>
       </div>
 
-      <DataTableGerbang />
-      {/* <ModalGerbang open={showModal} onClose={() => setShowModal(false)} /> */}
+      <DataTableGerbang
+        data={data}
+        page={page}
+        totalPages={totalPages}
+        loading={loading}
+        error={error}
+        filters={filters}
+        handleFilterChange={handleFilterChange}
+        setPage={setPage}
+        resetFilters={resetFilters}
+      />
+      {/* Modal */}
+      <CreateGerbangModal
+        existingData={data}
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSuccess={() => {
+          setTimeout(() => {
+            refetch();
+          }, 2000);
+        }}
+      />
     </div>
   );
 }
