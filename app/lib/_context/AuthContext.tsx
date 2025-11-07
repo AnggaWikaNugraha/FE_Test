@@ -1,9 +1,9 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import axios from "axios";
 import { AuthContextType } from "../_types/auth-context";
 import { api } from "../_api";
+import { ApiLoginResponse } from "../_types/api-login";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -16,23 +16,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (token) setIsAuthenticated(true);
   }, []);
 
-  const login = async (username: string, password: string) => {
+  const login = async (username: string, password: string): Promise<ApiLoginResponse> => {
     try {
-
       const response = await api.post("/auth/login", { username, password });
+      const data = response.data;
 
-      const token = response.data?.token;
-
-      if (token) {
-        localStorage.setItem("token", token);
+      if (data.status === true && data.token) {
+        localStorage.setItem("token", data.token);
         setIsAuthenticated(true);
-        return true;
+        return { status: true, message: data.message, token: data.token };
       } else {
-        return false;
+        return { status: false, message: data.message || "Username atau password salah" };
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login error:", error);
-      return false;
+
+      // Ambil pesan error dari response API (jika ada)
+      const apiMsg =
+        error?.response?.data?.message || "Terjadi kesalahan koneksi ke server";
+
+      return { status: false, message: apiMsg };
     }
   };
 

@@ -15,21 +15,26 @@ export function useLoginHandler() {
   const handleLogin = async (data: LoginFormValues) => {
     setApiError(null);
     setLoading(true);
-
+  
     try {
-      const success = await login(data.username, data.password);
-      if (success) {
+      // login() sekarang return object
+      const res = await login(data.username, data.password);
+      console.log(res);
+      
+  
+      if (res.status) {
+        // ✅ sukses login
         setApiError(null);
         router.push("/dashboard");
       } else {
-        setApiError("Username atau password salah");
+        // ❌ gagal login → tampilkan pesan dari API
+        setApiError(res.message || "Username atau password salah");
       }
     } catch (err) {
+      console.error("Login error:", err);
       setApiError("Terjadi kesalahan, coba lagi nanti");
     } finally {
-      setTimeout(() => {
-            setLoading(false);   
-      }, 2000);
+      setTimeout(() => setLoading(false), 2000);
     }
   };
 
