@@ -10,7 +10,6 @@ import { Gerbang } from "@/app/lib/_types/api-gerbang";
  */
 export function getGerbangColumns(
   onEdit?: (row: Gerbang) => void,
-  onView?: (row: Gerbang) => void,
   onDelete?: (row: Gerbang) => void
 ): TableColumn<Gerbang>[] {
   return [

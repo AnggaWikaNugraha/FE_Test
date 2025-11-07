@@ -26,6 +26,8 @@ interface DataTableGerbangProps {
   resetFilters: () => void;
   setSelectedGerbang: React.Dispatch<React.SetStateAction<Gerbang | null>>;
   setIsEditOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedDelete: any,
+  setConfirmOpen: any,
 }
 
 export default function DataTableGerbang({
@@ -40,21 +42,23 @@ export default function DataTableGerbang({
   resetFilters,
   setIsEditOpen,
   setSelectedGerbang,
+  setConfirmOpen,
+  setSelectedDelete,
 }: DataTableGerbangProps) {
+
   // Callback untuk aksi di kolom
   const handleEdit = (row: Gerbang) => {
     console.log("Edit:", row);
     setIsEditOpen(true)
     setSelectedGerbang(row)
   };
-  const handleView = (row: Gerbang) => {
-    console.log("View:", row);
-  };
   const handleDelete = (row: Gerbang) => {
     console.log("Delete:", row);
+    setConfirmOpen(true)
+    setSelectedDelete(row)
   };
 
-  const columns = getGerbangColumns(handleEdit, handleView, handleDelete);
+  const columns = getGerbangColumns(handleEdit, handleDelete);
 
   if (loading) return <div className="p-4 text-gray-500">Loading data...</div>;
   if (error)

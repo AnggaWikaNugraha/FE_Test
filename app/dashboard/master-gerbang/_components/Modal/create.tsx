@@ -7,6 +7,8 @@ import { createGerbang } from "@/app/lib/_api/master-gerbang/create";
 import InputFilter from "@/app/_components/filter/input/text";
 import ButtonAction from "@/app/_components/filter/actions/reset";
 import { CreateGerbangPayload } from "@/app/lib/_types/api-gerbang";
+import { useCreateGerbang } from "../../_hooks/UseCreategerbang";
+import { useGenerateAutoId } from "../../_hooks/UseGenerateId";
 
 interface CreateGerbangModalProps {
   isOpen: boolean;
@@ -21,9 +23,7 @@ export default function CreateGerbangModal({
   onSuccess,
   existingData,
 }: CreateGerbangModalProps) {
-  const [loading, setLoading] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  // 🧠 pakai custom hook
 
   const {
     register,
@@ -39,51 +39,26 @@ export default function CreateGerbangModal({
     },
   });
 
-  // 🧠 Auto-generate ID berdasarkan existingData
+  const { loading, apiError, successMsg, handleCreate } = useCreateGerbang(
+    onSuccess,
+    onClose,
+    reset
+  );
+  // 🔥 Form submit pakai hook
+  const onSubmit = (data: CreateGerbangPayload) => handleCreate(data);
+  // 🧠 panggil custom hook
+  const { nextId, nextCabangId } = useGenerateAutoId(isOpen, existingData);
+
+  // 🧠 update form otomatis saat id berubah
   useEffect(() => {
     if (isOpen) {
-      let nextId = 1;
-
-      // 🔹 Ambil IdCabang terakhir, lalu +1
-      const lastCabangId =
-        existingData && existingData.length > 0
-          ? existingData[existingData.length - 1].IdCabang + 1
-          : 1;
-
-      console.log("Auto nextId:", nextId, "Next IdCabang:", lastCabangId);
-
-      // 🧠 Isi otomatis form
       reset((prev) => ({
         ...prev,
-        id: lastCabangId,
-        IdCabang: lastCabangId,
+        id: nextCabangId,      // ❗ disamakan seperti versi kamu sebelumnya
+        IdCabang: nextCabangId,
       }));
     }
-  }, [isOpen, existingData, reset]);
-
-  const onSubmit = async (data: CreateGerbangPayload) => {
-    setLoading(true);
-    setApiError(null);
-    setSuccessMsg(null);
-    try {
-      const res = await createGerbang(data);
-      if (res.status) {
-        setSuccessMsg("✅ Data berhasil ditambahkan!");
-        reset();
-        if (onSuccess) onSuccess();
-        setTimeout(() => {
-          setSuccessMsg(null);
-          onClose();
-        }, 1200);
-      } else {
-        setApiError(res.message || "Gagal menambahkan data gerbang");
-      }
-    } catch (err: any) {
-      setApiError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [isOpen, nextCabangId, reset]);
 
   if (!isOpen) return null;
 
@@ -119,7 +94,7 @@ export default function CreateGerbangModal({
 
           {/* IdCabang */}
           <InputFilter
-          disabled
+            disabled
             label="ID Cabang"
             {...register("IdCabang", {
               required: "ID Cabang wajib diisi",

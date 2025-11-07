@@ -7,6 +7,7 @@ import InputFilter from "@/app/_components/filter/input/text";
 import ButtonAction from "@/app/_components/filter/actions/reset";
 import { updateGerbang } from "@/app/lib/_api/master-gerbang/update";
 import { CreateGerbangPayload } from "@/app/lib/_types/api-gerbang";
+import { useUpdateGerbang } from "../../_hooks/UseUpdateGerbang";
 
 interface EditGerbangModalProps {
   isOpen: boolean;
@@ -21,10 +22,6 @@ export default function EditGerbangModal({
   onSuccess,
   dataToEdit,
 }: EditGerbangModalProps) {
-  const [loading, setLoading] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
-
   const {
     register,
     handleSubmit,
@@ -39,6 +36,13 @@ export default function EditGerbangModal({
     },
   });
 
+  const { loading, apiError, successMsg, handleUpdate } = useUpdateGerbang(
+    onSuccess,
+    onClose
+  );
+
+  const onSubmit = (data: CreateGerbangPayload) => handleUpdate(data);
+
   // 🧠 Prefill data ketika modal dibuka
   useEffect(() => {
     if (isOpen && dataToEdit) {
@@ -50,30 +54,6 @@ export default function EditGerbangModal({
       });
     }
   }, [isOpen, dataToEdit, reset]);
-
-  const onSubmit = async (data: CreateGerbangPayload) => {
-    setLoading(true);
-    setApiError(null);
-    setSuccessMsg(null);
-
-    try {
-      const res = await updateGerbang(data); // ✅ langsung kirim body lengkap
-      if (res.status) {
-        setSuccessMsg("✅ Data berhasil diperbarui!");
-        if (onSuccess) onSuccess();
-        setTimeout(() => {
-          setSuccessMsg(null);
-          onClose();
-        }, 1200);
-      } else {
-        setApiError(res.message || "Gagal memperbarui data gerbang");
-      }
-    } catch (err: any) {
-      setApiError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (!isOpen) return null;
 

@@ -8,9 +8,13 @@ import CreateGerbangModal from "./_components/Modal/create";
 import { useGerbangData } from "./_hooks/UseDataGerbang";
 import EditGerbangModal from "./_components/Modal/edit";
 import { Gerbang } from "@/app/lib/_types/api-gerbang";
+import { deleteGerbang } from "@/app/lib/_api/master-gerbang/delete";
+import ConfirmModal from "./_components/Modal/confirmation";
+import { useDeleteGerbang } from "./_hooks/UseDeleteGerbang";
 
 export default function MasterGerbangPage() {
   const [showModal, setShowModal] = useState(false);
+
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedGerbang, setSelectedGerbang] = useState<Gerbang | null>(null);
 
@@ -26,6 +30,17 @@ export default function MasterGerbangPage() {
     resetFilters,
     refetch,
   } = useGerbangData();
+
+  const {
+    confirmOpen,
+    setConfirmOpen,
+    selectedDelete,
+    loadingDelete,
+    askDelete,
+    confirmDelete: handleConfirmDelete,
+    setSelectedDelete,
+    
+  } = useDeleteGerbang(refetch);
 
   return (
     <div className="bg-white rounded-xl shadow p-6">
@@ -51,7 +66,8 @@ export default function MasterGerbangPage() {
         resetFilters={resetFilters}
         setIsEditOpen={setIsEditOpen}
         setSelectedGerbang={setSelectedGerbang}
-
+        setSelectedDelete={setSelectedDelete}
+        setConfirmOpen={setConfirmOpen}
       />
       {/* Modal */}
       <CreateGerbangModal
@@ -74,6 +90,15 @@ export default function MasterGerbangPage() {
           }, 2000);
         }}
         dataToEdit={selectedGerbang}
+      />
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        title="Hapus Data Gerbang"
+        message={`Apakah Anda yakin ingin menghapus gerbang "${selectedDelete?.NamaGerbang}"?`}
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        loading={loadingDelete}
       />
     </div>
   );
