@@ -25,7 +25,7 @@ export function useLoginHandler() {
       if (res.status) {
         // ✅ sukses login
         setApiError(null);
-        router.push("/dashboard");
+        router.push("/dashboard/main");
       } else {
         // ❌ gagal login → tampilkan pesan dari API
         setApiError(res.message || "Username atau password salah");

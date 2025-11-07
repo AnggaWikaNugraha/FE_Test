@@ -9,11 +9,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<{ username: string; name: string } | null>(null);
 
   // restore token saat refresh
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
     if (token) setIsAuthenticated(true);
+    if (savedUser) setUser(JSON.parse(savedUser));
   }, []);
 
   const login = async (username: string, password: string): Promise<ApiLoginResponse> => {
@@ -24,7 +27,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (data.status === true && data.token) {
         localStorage.setItem("token", data.token);
         setIsAuthenticated(true);
-        return { status: true, message: data.message, token: data.token };
+        
+        const userData = {
+          username,
+          name: username.charAt(0).toUpperCase() + username.slice(1), // kapitalisasi huruf depan
+        };
+        localStorage.setItem("user", JSON.stringify(userData));
+        setUser(userData);
+
+        return { status: true, message: data.message, token: data.token, user: userData,};
       } else {
         return { status: false, message: data.message || "Username atau password salah" };
       }
@@ -41,11 +52,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setIsAuthenticated(false);
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout , user }}>
       {children}
     </AuthContext.Provider>
   );

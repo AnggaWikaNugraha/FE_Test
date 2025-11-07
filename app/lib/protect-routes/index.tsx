@@ -10,16 +10,15 @@ export default function ProtectedRoute({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
     // kalau tidak ada token dan belum login, redirect ke login
-    if (!token && !isAuthenticated) {
+    if (!token) {
       router.replace("/login");
     }
-  }, [isAuthenticated, router]);
+  }, [router]);
 
   return <>{children}</>;
 }
