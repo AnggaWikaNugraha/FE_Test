@@ -3,7 +3,7 @@ export interface ApiLoginResponse {
   message?: string;
   token?: string;
   user?: {
-      username: string;
-      name: string;
-    };
+    username: string;
+    name: string;
+  };
 }

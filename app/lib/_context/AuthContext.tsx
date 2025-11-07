@@ -1,64 +1,59 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { AuthContextType } from "../_types/auth-context";
-import { api } from "../_api";
-import { ApiLoginResponse } from "../_types/api-login";
+import { loginApi } from "../_api/login";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<{ username: string; name: string } | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [user, setUser] = useState<{ username: string; name: string } | null>(
+    null
+  );
 
   // restore token saat refresh
   useEffect(() => {
     const token = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
-    if (token) setIsAuthenticated(true);
     if (savedUser) setUser(JSON.parse(savedUser));
+
+    // ✅ Tandai bahwa restore selesai
+    setIsInitialized(true);
   }, []);
 
-  const login = async (username: string, password: string): Promise<ApiLoginResponse> => {
-    try {
-      const response = await api.post("/auth/login", { username, password });
-      const data = response.data;
+  const login = async (username: string, password: string) => {
+    const data = await loginApi(username, password);
 
-      if (data.status === true && data.token) {
-        localStorage.setItem("token", data.token);
-        setIsAuthenticated(true);
-        
-        const userData = {
-          username,
-          name: username.charAt(0).toUpperCase() + username.slice(1), // kapitalisasi huruf depan
-        };
-        localStorage.setItem("user", JSON.stringify(userData));
-        setUser(userData);
+    if (data.status && data.token) {
+      localStorage.setItem("token", data.token);
 
-        return { status: true, message: data.message, token: data.token, user: userData,};
-      } else {
-        return { status: false, message: data.message || "Username atau password salah" };
-      }
-    } catch (error: any) {
-      console.error("Login error:", error);
+      const userData = {
+        username,
+        name: username.charAt(0).toUpperCase() + username.slice(1),
+      };
 
-      // Ambil pesan error dari response API (jika ada)
-      const apiMsg =
-        error?.response?.data?.message || "Terjadi kesalahan koneksi ke server";
-
-      return { status: false, message: apiMsg };
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
     }
+
+    return data;
   };
 
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    setIsAuthenticated(false);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout , user }}>
+    <AuthContext.Provider value={{ login, logout, user, isInitialized }}>
       {children}
     </AuthContext.Provider>
   );

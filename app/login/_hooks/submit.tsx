@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/_context/AuthContext";
 import { LoginFormValues } from "@/app/lib/_types/login";
 
-
 export function useLoginHandler() {
   const [apiError, setApiError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -15,19 +14,15 @@ export function useLoginHandler() {
   const handleLogin = async (data: LoginFormValues) => {
     setApiError(null);
     setLoading(true);
-  
+
     try {
       // login() sekarang return object
       const res = await login(data.username, data.password);
-      console.log(res);
-      
-  
+
       if (res.status) {
-        // ✅ sukses login
         setApiError(null);
         router.push("/dashboard/main");
       } else {
-        // ❌ gagal login → tampilkan pesan dari API
         setApiError(res.message || "Username atau password salah");
       }
     } catch (err) {
