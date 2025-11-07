@@ -38,11 +38,6 @@ export function getGerbangColumns(
             className="text-blue-600 cursor-pointer hover:opacity-75"
             onClick={() => onEdit && onEdit(row)}
           />
-          <Eye
-            size={16}
-            className="text-green-600 cursor-pointer hover:opacity-75"
-            onClick={() => onView && onView(row)}
-          />
           <Trash
             size={16}
             className="text-red-600 cursor-pointer hover:opacity-75"

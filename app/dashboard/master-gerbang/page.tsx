@@ -6,9 +6,14 @@ import DataTableGerbang from "./_components/Table";
 import { Plus } from "lucide-react";
 import CreateGerbangModal from "./_components/Modal/create";
 import { useGerbangData } from "./_hooks/UseDataGerbang";
+import EditGerbangModal from "./_components/Modal/edit";
+import { Gerbang } from "@/app/lib/_types/api-gerbang";
 
 export default function MasterGerbangPage() {
   const [showModal, setShowModal] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [selectedGerbang, setSelectedGerbang] = useState<Gerbang | null>(null);
+
   const {
     data,
     page,
@@ -44,6 +49,9 @@ export default function MasterGerbangPage() {
         handleFilterChange={handleFilterChange}
         setPage={setPage}
         resetFilters={resetFilters}
+        setIsEditOpen={setIsEditOpen}
+        setSelectedGerbang={setSelectedGerbang}
+
       />
       {/* Modal */}
       <CreateGerbangModal
@@ -55,6 +63,17 @@ export default function MasterGerbangPage() {
             refetch();
           }, 2000);
         }}
+      />
+
+      <EditGerbangModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        onSuccess={() => {
+          setTimeout(() => {
+            refetch();
+          }, 2000);
+        }}
+        dataToEdit={selectedGerbang}
       />
     </div>
   );

@@ -2,25 +2,25 @@
 
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { XCircle, PlusCircle } from "lucide-react";
-import { createGerbang } from "@/app/lib/_api/master-gerbang/create";
+import { XCircle, Edit3 } from "lucide-react";
 import InputFilter from "@/app/_components/filter/input/text";
 import ButtonAction from "@/app/_components/filter/actions/reset";
+import { updateGerbang } from "@/app/lib/_api/master-gerbang/update";
 import { CreateGerbangPayload } from "@/app/lib/_types/api-gerbang";
 
-interface CreateGerbangModalProps {
+interface EditGerbangModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: () => void; // refresh data table setelah berhasil
-  existingData?: { id: number; IdCabang: number }[]; // ✅ data untuk pengecekan
+  onSuccess?: () => void; // refresh tabel setelah berhasil
+  dataToEdit?: CreateGerbangPayload | null; // data yang mau diedit
 }
 
-export default function CreateGerbangModal({
+export default function EditGerbangModal({
   isOpen,
   onClose,
   onSuccess,
-  existingData,
-}: CreateGerbangModalProps) {
+  dataToEdit,
+}: EditGerbangModalProps) {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -39,44 +39,34 @@ export default function CreateGerbangModal({
     },
   });
 
-  // 🧠 Auto-generate ID berdasarkan existingData
+  // 🧠 Prefill data ketika modal dibuka
   useEffect(() => {
-    if (isOpen) {
-      let nextId = 1;
-
-      // 🔹 Ambil IdCabang terakhir, lalu +1
-      const lastCabangId =
-        existingData && existingData.length > 0
-          ? existingData[existingData.length - 1].IdCabang + 1
-          : 1;
-
-      console.log("Auto nextId:", nextId, "Next IdCabang:", lastCabangId);
-
-      // 🧠 Isi otomatis form
-      reset((prev) => ({
-        ...prev,
-        id: lastCabangId,
-        IdCabang: lastCabangId,
-      }));
+    if (isOpen && dataToEdit) {
+      reset({
+        id: dataToEdit.id,
+        IdCabang: dataToEdit.IdCabang,
+        NamaGerbang: dataToEdit.NamaGerbang,
+        NamaCabang: dataToEdit.NamaCabang,
+      });
     }
-  }, [isOpen, existingData, reset]);
+  }, [isOpen, dataToEdit, reset]);
 
   const onSubmit = async (data: CreateGerbangPayload) => {
     setLoading(true);
     setApiError(null);
     setSuccessMsg(null);
+
     try {
-      const res = await createGerbang(data);
+      const res = await updateGerbang(data); // ✅ langsung kirim body lengkap
       if (res.status) {
-        setSuccessMsg("✅ Data berhasil ditambahkan!");
-        reset();
+        setSuccessMsg("✅ Data berhasil diperbarui!");
         if (onSuccess) onSuccess();
         setTimeout(() => {
           setSuccessMsg(null);
           onClose();
         }, 1200);
       } else {
-        setApiError(res.message || "Gagal menambahkan data gerbang");
+        setApiError(res.message || "Gagal memperbarui data gerbang");
       }
     } catch (err: any) {
       setApiError(err.message);
@@ -98,7 +88,7 @@ export default function CreateGerbangModal({
         </button>
 
         <h2 className="text-lg font-semibold text-sky-700 mb-4 flex items-center gap-2">
-          <PlusCircle size={20} className="text-sky-500" /> Tambah Data Gerbang
+          <Edit3 size={20} className="text-sky-500" /> Edit Data Gerbang
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -110,27 +100,19 @@ export default function CreateGerbangModal({
               required: "ID wajib diisi",
               valueAsNumber: true,
             })}
-            placeholder="4"
             widthClass="w-full"
           />
-          {errors.id && (
-            <p className="text-red-500 text-xs">{errors.id.message}</p>
-          )}
 
-          {/* IdCabang */}
+          {/* ID Cabang */}
           <InputFilter
-          disabled
+            disabled
             label="ID Cabang"
             {...register("IdCabang", {
               required: "ID Cabang wajib diisi",
               valueAsNumber: true,
             })}
-            placeholder="16"
             widthClass="w-full"
           />
-          {errors.IdCabang && (
-            <p className="text-red-500 text-xs">{errors.IdCabang.message}</p>
-          )}
 
           {/* Nama Gerbang */}
           <InputFilter
@@ -138,7 +120,7 @@ export default function CreateGerbangModal({
             {...register("NamaGerbang", {
               required: "Nama Gerbang wajib diisi",
             })}
-            placeholder="Kebumen 2"
+            placeholder="Isi nama gerbang"
             widthClass="w-full"
           />
           {errors.NamaGerbang && (
@@ -148,8 +130,10 @@ export default function CreateGerbangModal({
           {/* Nama Cabang */}
           <InputFilter
             label="Nama Cabang"
-            {...register("NamaCabang", { required: "Nama Cabang wajib diisi" })}
-            placeholder="Gedebage Cilacap"
+            {...register("NamaCabang", {
+              required: "Nama Cabang wajib diisi",
+            })}
+            placeholder="Isi nama cabang"
             widthClass="w-full"
           />
           {errors.NamaCabang && (
@@ -177,7 +161,7 @@ export default function CreateGerbangModal({
               type="button"
             />
             <ButtonAction
-              label={loading ? "Menyimpan..." : "Simpan"}
+              label={loading ? "Menyimpan..." : "Update"}
               variant="primary"
               type="submit"
               disabled={loading}
