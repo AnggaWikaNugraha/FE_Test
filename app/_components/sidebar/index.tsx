@@ -15,7 +15,7 @@ export default function Sidebar() {
   const [open, setOpen] = useState(true);
 
   const menu = [
-    { icon: <Home size={18} />, label: "Dashboard", href: "/" },
+    { icon: <Home size={18} />, label: "Dashboard", href: "/dashboard/main" },
     {
       icon: <Layers size={18} />,
       label: "Laporan Lalin",
