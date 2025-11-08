@@ -4,6 +4,7 @@ export interface GerbangFilter {
   NamaCabang?: string;
   NamaGerbang?: string;
   page?: number;
+  limit?: number;
 }
 
 // Struktur data satu item gerbang

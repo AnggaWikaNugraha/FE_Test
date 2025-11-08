@@ -8,6 +8,7 @@ interface Filters {
   NamaGerbang: string;
   NamaCabang: string;
   IdCabang: string;
+  limit: number;
 }
 
 export function useGerbangData() {
@@ -20,6 +21,7 @@ export function useGerbangData() {
     NamaGerbang: "",
     NamaCabang: "",
     IdCabang: "",
+    limit: 2,
   });
 
   /**
@@ -35,6 +37,7 @@ export function useGerbangData() {
         NamaGerbang: filters.NamaGerbang || undefined,
         NamaCabang: filters.NamaCabang || undefined,
         IdCabang: filters.IdCabang ? Number(filters.IdCabang) : undefined,
+        limit: filters?.limit,
       });
 
       setData(res.data.rows.rows);
@@ -76,7 +79,7 @@ export function useGerbangData() {
    * 🔁 Reset filter ke default
    */
   const resetFilters = () => {
-    setFilters({ NamaGerbang: "", NamaCabang: "", IdCabang: "" });
+    setFilters({ NamaGerbang: "", NamaCabang: "", IdCabang: "", limit: 5 });
     setPage(0);
   };
 

@@ -25,6 +25,7 @@ export default function MasterGerbangPage() {
     loading,
     error,
     filters,
+    setFilters,
     handleFilterChange,
     setPage,
     resetFilters,
@@ -60,6 +61,7 @@ export default function MasterGerbangPage() {
         totalPages={totalPages}
         loading={loading}
         error={error}
+        setFilters={setFilters}
         filters={filters}
         handleFilterChange={handleFilterChange}
         setPage={setPage}

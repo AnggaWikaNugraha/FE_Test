@@ -10,16 +10,20 @@ import { Gerbang } from "@/app/lib/_types/api-gerbang";
  */
 export function getGerbangColumns(
   onEdit?: (row: Gerbang) => void,
-  onDelete?: (row: Gerbang) => void
+  onDelete?: (row: Gerbang) => void,
+  currentPage: number = 0,
+  limit: number = 2,
 ): TableColumn<Gerbang>[] {
   return [
+      {
+            name: "No.",
+            cell: (_row, index) => (
+              <div>{currentPage * limit + (index + 1)}</div>
+            ),
+            width: "80px",
+          },
     {
-      name: "No.",
-      cell: (_row, index) => <div>{index + 1}</div>,
-      width: "80px",
-    },
-    {
-      name: "Nama Cabang",
+      name: "Ruas",
       selector: (row) => row.NamaCabang,
       sortable: true,
     },

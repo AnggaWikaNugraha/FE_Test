@@ -20,7 +20,7 @@ export default function Sidebar() {
       icon: <Layers size={18} />,
       label: "Laporan Lalin",
       children: [
-        { label: "Laporan perhari", href: "/" },
+        { label: "Laporan perhari", href: "/dashboard/lalin" },
       ],
     },
     { icon: <Folder size={18} />, label: "Master Gerbang", href: "/dashboard/master-gerbang" },

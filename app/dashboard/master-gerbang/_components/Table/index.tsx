@@ -12,6 +12,7 @@ interface Filters {
   NamaGerbang: string;
   NamaCabang: string;
   IdCabang: string;
+  limit: number
 }
 
 interface DataTableGerbangProps {
@@ -28,6 +29,7 @@ interface DataTableGerbangProps {
   setIsEditOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedDelete: any,
   setConfirmOpen: any,
+  setFilters: any,
 }
 
 export default function DataTableGerbang({
@@ -37,6 +39,7 @@ export default function DataTableGerbang({
   loading,
   error,
   filters,
+  setFilters,
   handleFilterChange,
   setPage,
   resetFilters,
@@ -58,7 +61,9 @@ export default function DataTableGerbang({
     setSelectedDelete(row)
   };
 
-  const columns = getGerbangColumns(handleEdit, handleDelete);
+  const columns = getGerbangColumns(handleEdit, handleDelete, page, filters?.limit);
+
+  
 
   if (loading) return <div className="p-4 text-gray-500">Loading data...</div>;
   if (error)
@@ -70,11 +75,11 @@ export default function DataTableGerbang({
       <div className="flex flex-wrap items-end gap-4 mb-6 bg-white/80 backdrop-blur-sm p-5 rounded-2xl shadow-md border border-sky-100">
         {/* 🔍 Nama Cabang */}
         <InputFilter
-          label="Nama Cabang"
+          label="Nama Ruas"
           name="NamaCabang"
           value={filters.NamaCabang}
           onChange={handleFilterChange}
-          placeholder="Cari cabang..."
+          placeholder="Cari Ruas..."
         />
         <InputFilter
           label="Nama Gerbang"
@@ -88,7 +93,7 @@ export default function DataTableGerbang({
           name="IdCabang"
           value={filters.IdCabang}
           onChange={handleFilterChange}
-          placeholder="16"
+          placeholder="Cari ID"
           widthClass="w-24"
         />
 
@@ -111,8 +116,12 @@ export default function DataTableGerbang({
 
       <Pagination
         pageCount={totalPages}
-        onPageChange={(p) => setPage(p)}
+        onPageChange={(p: any) => setPage(p)}
         currentPage={page}
+        setFilters={setFilters}
+        setPage={setPage}
+        filters={filters}
+        data={data}
       />
     </>
   );
