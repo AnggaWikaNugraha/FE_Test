@@ -2,20 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
-
-export type LalinItem = {
-  IdCabang: number;
-  IdGerbang: number;
-  Shift: number;
-  Tanggal: string;
-  Tunai: number;
-  eMandiri: number;
-  eBri: number;
-  eBni: number;
-  eBca: number;
-  eMega: number;
-  eFlo: number;
-};
+import { LalinItem } from "@/app/lib/_types/lalin";
 
 /**
  * ✅ Custom Hook: useDashboardLalin

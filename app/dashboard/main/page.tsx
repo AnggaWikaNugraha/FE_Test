@@ -1,7 +1,5 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import axios from "axios";
 import dynamic from "next/dynamic";
 import { Calendar, Search } from "lucide-react";
 import type { ApexOptions } from "apexcharts";
@@ -9,20 +7,6 @@ import { useDashboardLalin } from "./_hooks/UseChart";
 
 // ✅ safe for SSR
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-
-type LalinItem = {
-  IdCabang: number;
-  IdGerbang: number;
-  Shift: number;
-  Tanggal: string;
-  Tunai: number;
-  eMandiri: number;
-  eBri: number;
-  eBni: number;
-  eBca: number;
-  eMega: number;
-  eFlo: number;
-};
 
 type ApexSeries = { name?: string; data: number[] };
 

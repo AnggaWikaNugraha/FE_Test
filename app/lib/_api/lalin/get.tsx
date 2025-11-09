@@ -1,26 +1,6 @@
 import { api } from "@/app/lib/_api";
+import { LalinItem } from "../../_types/lalin";
 
-/**
- * 🧾 Interface response data item
- */
-export interface LalinItem {
-  IdCabang: number;
-  IdGerbang: number;
-  IdGardu: number;
-  Golongan: number;
-  Tanggal: string;
-  Shift: number;
-  Tunai: number;
-  eMandiri: number;
-  eBri: number;
-  eBni: number;
-  eBca: number;
-  eFlo: number;
-}
-
-/**
- * 🧾 Interface response utama (struktur umum API)
- */
 export interface LalinResponse {
   status: boolean;
   message: string;
