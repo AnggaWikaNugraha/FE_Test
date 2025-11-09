@@ -35,7 +35,9 @@ export function useLalinData() {
       console.error("❌ Fetch error:", err);
       setError(err.message || "Gagal memuat data Lalin");
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     }
   };
 

@@ -32,7 +32,7 @@ export function useDashboardLalin() {
     setLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/lalins?tanggal=${tanggal}`
+        `http://localhost:8080/api/lalins?tanggal=${tanggal}&limit=999999`
       );
       const data = res?.data?.data?.rows?.rows || [];
       setRows(data);

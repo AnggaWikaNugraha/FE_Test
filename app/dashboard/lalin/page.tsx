@@ -86,7 +86,7 @@ export default function PageLalin() {
 
       {/* Table */}
       {loading ? (
-        <p className="text-gray-500 italic">Memuat data...</p>
+        <p className="text-gray-500 italic">Loading data...</p>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : filteredData.length > 0 ? (
