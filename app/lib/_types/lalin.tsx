@@ -11,6 +11,12 @@ export interface LalinItem {
   eBni: number;
   eBca: number;
   eFlo: number;
+  eDki?: number;
+  eMega?: number
+  eNobu?: number
+  DinasKary?: number
+  DinasMitra?: number
+  DinasOpr?: number
 }
 
 export interface LalinRow {

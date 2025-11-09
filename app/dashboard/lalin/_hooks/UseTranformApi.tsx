@@ -46,15 +46,40 @@ export function useTransformLalinData() {
         }
 
         let total = 0;
-        if (jenis === "tunai") total = item.Tunai ?? 0;
-        else if (jenis === "etoll")
+        if (jenis === "tunai") {
+          total = item.Tunai ?? 0;
+        } else if (jenis === "etoll") {
           total =
             (item.eMandiri ?? 0) +
             (item.eBri ?? 0) +
             (item.eBni ?? 0) +
-            (item.eBca ?? 0);
-        else if (jenis === "flo") total = item.eFlo ?? 0;
-        else
+            (item.eBca ?? 0) +
+            (item.eDki ?? 0) +
+            (item.eMega ?? 0) +
+            (item.eNobu ?? 0);
+        } else if (jenis === "flo") {
+          total = item.eFlo ?? 0;
+        } else if (jenis === "ktp") {
+          total =
+            (item.DinasKary ?? 0) +
+            (item.DinasMitra ?? 0) +
+            (item.DinasOpr ?? 0);
+        } else if (jenis === "keseluruhan") {
+          total =
+            (item.Tunai ?? 0) +
+            (item.eMandiri ?? 0) +
+            (item.eBri ?? 0) +
+            (item.eBni ?? 0) +
+            (item.eBca ?? 0) +
+            (item.eDki ?? 0) +
+            (item.eMega ?? 0) +
+            (item.eNobu ?? 0) +
+            (item.eFlo ?? 0) +
+            (item.DinasKary ?? 0) +
+            (item.DinasMitra ?? 0) +
+            (item.DinasOpr ?? 0);
+        } else {
+          // default: total kombinasi utama
           total =
             (item.Tunai ?? 0) +
             (item.eMandiri ?? 0) +
@@ -62,7 +87,9 @@ export function useTransformLalinData() {
             (item.eBni ?? 0) +
             (item.eBca ?? 0) +
             (item.eFlo ?? 0);
+        }
 
+        // Tentukan kolom golongan
         const keyGol =
           item.Golongan === 1
             ? "GolI"
